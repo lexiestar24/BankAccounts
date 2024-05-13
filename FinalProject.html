@@ -71,7 +71,7 @@ Final Project - HTML-->
       <div id="savingsAccount" class="flex acct">
         <div id="unopenedSavings">
           <!--open savings account-->
-          <div id="openSavings" class="block">
+          <div id="openSavings">
             <p id="savingsWarn" class="warn"></p>
             <button type="button" id="btnOpenSav">Open Account</button>
             <input type="text" id="savingsDeposit" /><br />
@@ -127,57 +127,68 @@ Final Project - HTML-->
 
       <!--MUTUAL FUND ACCOUNT-->
       <div id="mutualFundAccount" class="flex acct">
-        <!--open mutual fund account-->
-        <div id="openMutualFund">
-          <button type="button" id="btnOpenMutualFund">Open Account</button>
-          <input type="text" id="mutualFundDeposit" /><br />
-          <label for="mutualFundDate">Date</label>
-          <input type="date" name="mutualFundDate" id="mutualFundDate" />
-        </div>
-        <!--unopened mutual fund content-->
-        <div id="mutualFundInfo">
-          <h1>Mutual Fund Account</h1>
-          <img src="Images/ForgottenMountain.jpg" class="acctImg" />
-        </div>
-        <!--opened checking content-->
-        <div id="openMutualFundAcct" class="green hide">
-          <h1>Mutual Fund Account</h1>
-          <div id="openMutualFundHeader">
-            <p id="openedMutualFundWarn" class="warn"></p>
-            <label for="MutualFundInterestRate">Current Interest Rate</label>
-            <input
-              type="text"
-              name="MutualFundInterestRate"
-              id="MutualFundInterestRate"
-            />
+        <div id="unopenedMutualFund">
+          <!--open mutual fund account-->
+          <div id="openMutualFund">
+            <p id="mutualFundWarn" class="warn"></p>
+            <button type="button" id="btnOpenMF">Open Account</button>
+            <input type="text" id="mutualFundDeposit" /><br />
+            <label for="mutualFundDate">Date</label>
+            <input type="date" name="mutualFundDate" id="mutualFundDate" />
           </div>
-          <button type="button" id="btnMutualFundDeposit">Deposit</button>
-          <input type="text" id="mutualFundDepositText" /><br />
-          <button type="button" id="btnMutualFundWithdraw">Withdraw</button>
-          <input type="text" id="mutualFundWithdrawText" />
-          <table id="mutualFundTable">
-            <thead>
-              <tr>
-                <th>Date</th>
-                <th>Description</th>
-                <th>Amount</th>
-                <th>Balance</th>
-              </tr>
-            </thead>
-            <tbody id="checkingTBody"></tbody>
-          </table>
-          <!--close mutual fund account-->
-          <div id="closeMutualFund">
-            <button type="button" id="btnCloseMutualFund" class="hide btnClose">
-              Close Account
-            </button>
+          <!--unopened mutual fund content-->
+          <div id="mutualFundInfo" class="green">
+            <h1>Mutual Fund Account</h1>
+            <img src="Images/ForgottenMountain.jpg" class="acctImg" />
           </div>
+        </div>
+        <!--opened mutual fund content-->
+        <div id="openMutualFundAcct" class="green">
+          <h1>Mutual Fund Account</h1>
+          <div id="openMutualFundControls">
+            <div id="mutualFundInterest">
+              <p id="openedMutualFundWarn" class="warn"></p>
+              <label for="MutualFundInterestRate">Current Interest Rate</label>
+              <input
+                type="text"
+                name="MutualFundInterestRate"
+                id="MutualFundInterestRate"
+              />
+            </div>
+            <button type="button" id="btnMutualFundDeposit">Deposit</button>
+            <input type="text" id="mutualFundDepositText" /><br />
+            <button type="button" id="btnMutualFundWithdraw">Withdraw</button>
+            <input type="text" id="mutualFundWithdrawText" />
+          </div>
+          <div class="scroll">
+            <table id="mutualFundTable" class="sortable">
+              <thead>
+                <tr>
+                  <th data-sort="Date">Date</th>
+                  <th data-sort="Description">Description</th>
+                  <th data-sort="Amount">Amount</th>
+                  <th data-sort="Balance">Balance</th>
+                </tr>
+              </thead>
+              <tbody id="mutualFundTBody"></tbody>
+            </table>
+          </div>
+          <p id="closeMutualFundMsg" class="hide"></p>
+        </div>
+        <!--close mutual fund account-->
+        <div id="closeMutualFund" class="center">
+          <button type="button" id="btnCloseMF" class="center">
+            Close Account
+          </button>
         </div>
       </div>
     </div>
   </body>
   <script src="JS/jquery-3.7.1.min.js"></script>
-  <!-- <script src="JS/FinalProject.js"></script> -->
+  <!--link to Checking Account JS-->
+  <script src="JS/FinalProject.js"></script>
+  <!--link to Savings Account JS-->
   <script src="JS/FinalProjectSavings.js"></script>
+  <!--link to Mutual Fund Account JS-->
   <script src="JS/FinalProjectMutualFund.js"></script>
 </html>

@@ -9,7 +9,6 @@ var $checkingDate;
 var $checkingDeposit;
 var checkingTransactions = [];
 var secondsPerYear = 365 * 24 * 60 * 60; //365 days/yr, 24 hrs/day, 60 mins/hr, 60 sec/min
-var timerInterval;
 var timer;
 var timer2;
 var $checkDepositAmount;
@@ -251,16 +250,13 @@ $("#btnCheckingWithdraw").on("click", function () {
   $checkWithdrawAmount = $("#checkingWithdrawText").val(); //get withdrawal amount
   $checkWithdrawAmount = Number($checkWithdrawAmount); //convert from string to number
   var previousBalance = trimCurrencyFromPreviousBalance(); //get most recent account balance
-  if ($checkWithdrawAmount > 0) {
+  if ($checkWithdrawAmount <= previousBalance && $checkWithdrawAmount !== 0) {
     //don't display warning message
     $("#openedCheckingWarn").text("");
-
-    //calcualte new balance for withdrawals
+    //calculate new balance for withdrawals
     newBalance = previousBalance - $checkWithdrawAmount;
-
     //calculate transaction date for withdrawals
     var withdrawalTransactionDate = calculateDaysElapsed();
-
     //create withdrawal transaction
     var withdrawalTransaction = {
       Date: formatDate(withdrawalTransactionDate),
@@ -272,7 +268,8 @@ $("#btnCheckingWithdraw").on("click", function () {
     makeCheckingRows(); //update table with new row of withdraw transaction
     $checkWithdrawAmount = $("#checkingWithdrawText").val(""); //clear out withdraw text box
   } else {
-    var checkWithdrawMsg = "Withdrawal must be less than current balance";
+    var checkWithdrawMsg =
+      "Withdrawal must be less than current balance and greater than 0";
     //display warning message
     $("#openedCheckingWarn").text(checkWithdrawMsg);
   }
@@ -284,7 +281,7 @@ function stopInterestTimer() {
   clearInterval(timer2);
 }
 
-//CLOSE ACCOUNT
+//CLOSE CHECKING ACCOUNT
 $("#btnCloseCheck").on("click", function () {
   //stop timer
   stopInterestTimer();

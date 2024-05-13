@@ -105,20 +105,22 @@ th.descending {
   display: inline-block;
 }
 #btnCloseCheck,
-#btnCloseSav {
+#btnCloseSav,
+#btnCloseMF {
   display: flex;
   justify-content: center;
 }
 #openCheckingControls,
-#openSavingsControls {
+#openSavingsControls,
+#openMutualFundControls {
   padding-left: 2%;
 }
 
-/*-----fix me
-#btnClose {
+#closeChecking,
+#closeSavings,
+#closeMutualFund {
   margin-top: 2%;
 }
-*/
 
 /*-----JS STYLING-----*/
 .hide {
@@ -129,7 +131,9 @@ th.descending {
   text-align: center;
   font-weight: bold;
 }
-#closeCheckingMsg {
+#closeCheckingMsg,
+#closeSavingsMsg,
+#closeMutualFundMsg {
   background-color: yellow;
   text-align: center;
   font-weight: bold;

@@ -4,25 +4,24 @@ Savings Account*/
 
 //------UNOPENED SAVINGS ACCOUNT------
 //declare global variables
-var $btnCloseAccount = $("#btnCloseSav");
+var $btnCloseSav = $("#btnCloseSav");
 var $savingsDate;
 var $savingsDeposit;
 var savingsTransactions = [];
 var secondsPerYear = 365 * 24 * 60 * 60; //365 days/yr, 24 hrs/day, 60 mins/hr, 60 sec/min
-var timerInterval;
-var timer;
-var timer2;
+var savTimer;
+var savTimer2;
 var $savDepositAmount;
 var $savWithdrawAmount;
-var previousBalance;
-var newBalance;
-var elapsedTime = 0;
-console.log(elapsedTime);
+var previousSavBalance;
+var newSavBalance;
+var savElapsedTime = 0;
+console.log(savElapsedTime);
 
 //initally hide open account info
 $("#opensavingsAcct").hide();
 //initially hide close account button
-$btnCloseAccount.hide();
+$btnCloseSav.hide();
 
 //VALIDATE DATE TO OPEN ACCOUNT
 $("#savingsDate").on("blur", function () {
@@ -57,19 +56,19 @@ $("#btnOpenSav").on("click", function () {
   if ($savingsDate && $savingsDeposit > 0) {
     $("#unopenedSavings").hide(); //hide unopened account info
     $("#opensavingsAcct").show(); //show opened account info
-    $btnCloseAccount.show(); //show Close Account button
+    $btnCloseSav.show(); //show Close Account button
 
     //create initial transaction in table only if there are no transactions yet
     if (savingsTransactions.length === 0) {
       var openingSavingsTransaction = {
-        Date: $savingsDate,
-        Description: "Open Account",
-        Amount: "$" + $savingsDeposit.toFixed(2), //2 decimal places
-        Balance: "$" + $savingsDeposit.toFixed(2), //2 decimal places
+        savDate: $savingsDate,
+        savDescription: "Open Account",
+        savAmount: "$" + $savingsDeposit.toFixed(2), //2 decimal places
+        savBalance: "$" + $savingsDeposit.toFixed(2), //2 decimal places
       };
       savingsTransactions.push(openingSavingsTransaction); //add opening transaction to array
       makeSavingsRows(openingSavingsTransaction); //add opening transaction row to the table
-      startInterestTimer(); //start interest payment timer
+      startSavInterestTimer(); //call function to start interest payment timer
     }
   } else {
     var savWarn = "Enter a valid deposit amount and date";
@@ -89,56 +88,59 @@ function makeSavingsRows() {
   savingsTransactions.forEach(function (transaction) {
     var $savingsRow = $("<tr></tr>"); //create new row
     //append td elements to new row that contains all information about the transaction
-    $savingsRow.append($("<td></td>").text(transaction.Date));
-    $savingsRow.append($("<td></td>").text(transaction.Description));
-    $savingsRow.append($("<td></td>").text(transaction.Amount));
-    $savingsRow.append($("<td></td>").text(transaction.Balance));
+    $savingsRow.append($("<td></td>").text(transaction.savDate));
+    $savingsRow.append($("<td></td>").text(transaction.savDescription));
+    $savingsRow.append($("<td></td>").text(transaction.savAmount));
+    $savingsRow.append($("<td></td>").text(transaction.savBalance));
     $("#savingsTBody").append($savingsRow);
   });
 }
 
 //FUNCTION TO START INTEREST PAYMENT TIMER
-function startInterestTimer() {
+function startSavInterestTimer() {
   //calculate time until first interest payment (10 seconds)
-  var timeUntilFirstInterestPayment = 10 * 1000; //convert milliseconds to seconds
+  var timeUntilFirstSavingsInterestPayment = 10 * 1000; //convert milliseconds to seconds
   //start timer
-  clearInterval(timer);
-  timer = setInterval(addInterestPayment, timeUntilFirstInterestPayment);
-  var timeUntilFirstInterestPayment = 1 * 1000; //convert milliseconds to seconds
-  clearInterval(timer2);
-  timer2 = setInterval(() => {
+  clearInterval(savTimer);
+  savTimer = setInterval(
+    addSavInterestPayment,
+    timeUntilFirstSavingsInterestPayment
+  );
+  var timeUntilFirstSavingsInterestPayment = 1 * 1000; //convert milliseconds to seconds
+  clearInterval(savTimer2);
+  savTimer2 = setInterval(() => {
     //increment seconds if less than 10 seconds
-    if (elapsedTime < 10) {
-      elapsedTime++;
-      console.log(elapsedTime);
+    if (savElapsedTime < 10) {
+      savElapsedTime++;
+      console.log(savElapsedTime);
       //otherwise resest seconds back to 1
     } else {
-      elapsedTime = 1;
-      console.log(elapsedTime);
+      savElapsedTime = 1;
+      console.log(savElapsedTime);
     }
-  }, timeUntilFirstInterestPayment);
+  }, timeUntilFirstSavingsInterestPayment);
 }
 
 //FUNCTION TO GET MOST RECENT DATE OF INTEREST PAYMENTS (OR OPEN ACCOUNT DATE)
-function getMostRecentInterestDateOrOpenDate() {
+function getMostRecentSavInterestDateOrOpenDate() {
   for (let i = savingsTransactions.length - 1; i >= 0; i--) {
-    console.log(savingsTransactions[i].Description);
+    console.log(savingsTransactions[i].savDescription);
     if (
-      savingsTransactions[i].Description ===
+      savingsTransactions[i].savDescription ===
         "Interest Payment (" + $savInterestRate + "%)" ||
-      savingsTransactions[i].Description === "Open Account"
+      savingsTransactions[i].savDescription === "Open Account"
     ) {
       console.log(savingsTransactions[i]);
-      return savingsTransactions[i].Date;
+      return savingsTransactions[i].savDate;
     }
   }
 }
 
 //FUNCTION TO UPDATE TIMER INTERVAL
-function updateTimerInterval() {
-  clearInterval(timer);
+function updateSavingsTimerInterval() {
+  clearInterval(savTimer);
   //set timer interval to trigger every 10 seconds
-  timer = setInterval(addInterestPayment, 10 * 1000);
+  savTimer = setInterval(addSavInterestPayment, 10 * 1000);
 }
 
 //FUNCTION TO FORMAT DATE
@@ -150,27 +152,29 @@ function formatDate(date) {
 }
 
 //FUNCTION TO CALCULATE DAYS ELAPSED
-function calculateDaysElapsed() {
+function calculateSavDaysElapsed() {
   //calculate simulated date based on time elapsed since last interest payment
-  var lastInterestPaymentOrOpenAccount = getMostRecentInterestDateOrOpenDate();
-  var daysElapsed = 365 * (elapsedTime / 10);
-  console.log(daysElapsed);
-  var nextTransactionDate = new Date(lastInterestPaymentOrOpenAccount);
-  nextTransactionDate.setDate(nextTransactionDate.getDate() + daysElapsed);
-  console.log(nextTransactionDate);
-  return nextTransactionDate;
+  var lastSavInterestPaymentOrOpenAccount =
+    getMostRecentSavInterestDateOrOpenDate();
+  var savDaysElapsed = 365 * (savElapsedTime / 10);
+  console.log(savDaysElapsed);
+  var nextSavTransactionDate = new Date(lastSavInterestPaymentOrOpenAccount);
+  nextSavTransactionDate.setDate(
+    nextSavTransactionDate.getDate() + savDaysElapsed
+  );
+  console.log(nextSavTransactionDate);
+  return nextSavTransactionDate;
 }
 
 //FUNCTION TO TRIM $ OFF PREVIOUS TRANSACTION BALANCE
-function trimCurrencyFromPreviousBalance() {
+function trimCurrencyFrompreviousSavBalance() {
   var previousTransaction = savingsTransactions[savingsTransactions.length - 1];
-  //remove $ symbol from previousTransaction.Balance
-  var balanceWithoutSymbol = previousTransaction.Balance.replace(
-    "$",
-    ""
-  ).trim();
-  previousBalance = parseFloat(balanceWithoutSymbol);
-  return previousBalance;
+  //remove $ symbol from previousTransaction.savBalance
+  var balanceWithoutSymbol = previousTransaction.savBalance
+    .replace("$", "")
+    .trim();
+  previousSavBalance = parseFloat(balanceWithoutSymbol);
+  return previousSavBalance;
 }
 
 //FUNCTION TO GET INTEREST RATE
@@ -186,31 +190,31 @@ $("#SavingsInterestRate").on("change", function () {
 });
 
 //FUNCTION TO ADD NEW ROWS FOR INTEREST PAYMENTS
-function addInterestPayment() {
-  var lastInterestPaymentDate = new Date(getMostRecentInterestDateOrOpenDate());
-  //calculate next interest payment date (10 seconds [1 year] from last interest payment)
-  var nextInterestPaymentDate = new Date(lastInterestPaymentDate);
-  nextInterestPaymentDate.setFullYear(
-    nextInterestPaymentDate.getFullYear() + 1
+function addSavInterestPayment() {
+  var lastInterestPaymentDate = new Date(
+    getMostRecentSavInterestDateOrOpenDate()
   );
-  nextInterestPaymentDate.setDate(nextInterestPaymentDate.getDate() + 1); //add one day to make full year
-
+  //calculate next interest payment date (10 seconds [1 year] from last interest payment)
+  var nextSavInterestPaymentDate = new Date(lastInterestPaymentDate);
+  nextSavInterestPaymentDate.setFullYear(
+    nextSavInterestPaymentDate.getFullYear() + 1
+  );
+  nextSavInterestPaymentDate.setDate(nextSavInterestPaymentDate.getDate() + 1); //add one day to make full year
   //calculate interest amount and new balance
-  var previousBalance = trimCurrencyFromPreviousBalance();
+  var previousSavBalance = trimCurrencyFrompreviousSavBalance();
   console.log($savInterestRate);
-  interestAmount = previousBalance * $savInterestRate;
-  newBalance = interestAmount + previousBalance;
-
+  SavInterestAmount = previousSavBalance * $savInterestRate;
+  newSavBalance = SavInterestAmount + previousSavBalance;
   //create new interest payment transaction
-  var interestPaymentTransaction = {
-    Date: formatDate(nextInterestPaymentDate),
-    Description: "Interest Payment (" + $savInterestRate + "%)",
-    Amount: "$" + interestAmount.toFixed(2), //2 digits
-    Balance: "$" + newBalance.toFixed(2), //2 digits
+  var savInterestPaymentTransaction = {
+    savDate: formatDate(nextSavInterestPaymentDate),
+    savDescription: "Interest Payment (" + $savInterestRate + "%)",
+    savAmount: "$" + SavInterestAmount.toFixed(2), //2 digits
+    savBalance: "$" + newSavBalance.toFixed(2), //2 digits
   };
-  savingsTransactions.push(interestPaymentTransaction); //add interest transaction to array
+  savingsTransactions.push(savInterestPaymentTransaction); //add interest transaction to array
   makeSavingsRows(); //update table with new row of interest payment transaction
-  updateTimerInterval(); //update timer interval
+  updateSavingsTimerInterval(); //update timer interval
 }
 
 //MAKE DEPOSITS
@@ -220,22 +224,19 @@ $("#btnSavingsDeposit").on("click", function () {
   if ($savDepositAmount > 0) {
     //don't display warning message
     $("#openedSavingsWarn").text("");
-
     //calculate new balance for deposits
-    var previousBalance = trimCurrencyFromPreviousBalance();
-    newBalance = previousBalance + $savDepositAmount;
-
+    var previousSavBalance = trimCurrencyFrompreviousSavBalance();
+    newSavBalance = previousSavBalance + $savDepositAmount;
     //calculate transaction date for deposits
-    var depositTransactionDate = calculateDaysElapsed();
-
+    var savDepositTransactionDate = calculateSavDaysElapsed();
     //create new deposit transaction
-    var depositTransaction = {
-      Date: formatDate(depositTransactionDate), //use formatted simulated date
-      Description: "Deposit",
-      Amount: "$" + $savDepositAmount.toFixed(2), //2 digits
-      Balance: "$" + newBalance.toFixed(2), //2 digits
+    var savDepositTransaction = {
+      savDate: formatDate(savDepositTransactionDate), //use formatted simulated date
+      savDescription: "Deposit",
+      savAmount: "$" + $savDepositAmount.toFixed(2), //2 digits
+      savBalance: "$" + newSavBalance.toFixed(2), //2 digits
     };
-    savingsTransactions.push(depositTransaction); //add deposit transaction to array
+    savingsTransactions.push(savDepositTransaction); //add deposit transaction to array
     makeSavingsRows(); //update table with new row of deposit transaction
     $savDepositAmount = $("#savingsDepositText").val(""); //clear out deposit text box
   } else {
@@ -245,69 +246,67 @@ $("#btnSavingsDeposit").on("click", function () {
   }
 });
 
-// //MAKE WITHDRAWALS
-// $("#btnCheckingWithdraw").on("click", function () {
-//   $checkWithdrawAmount = $("#checkingWithdrawText").val(); //get withdrawal amount
-//   $checkWithdrawAmount = Number($checkWithdrawAmount); //convert from string to number
-//   var previousBalance = trimCurrencyFromPreviousBalance(); //get most recent account balance
-//   if ($checkWithdrawAmount > 0) {
-//     //don't display warning message
-//     $("#openedCheckingWarn").text("");
+//MAKE WITHDRAWALS
+$("#btnSavingsWithdraw").on("click", function () {
+  $savWithdrawAmount = $("#SavingsWithdrawText").val(); //get withdrawal amount
+  $savWithdrawAmount = Number($savWithdrawAmount); //convert from string to number
+  var previousSavBalance = trimCurrencyFrompreviousSavBalance(); //get most recent account balance
+  if ($savWithdrawAmount <= previousSavBalance && $savWithdrawAmount !== 0) {
+    //don't display warning message
+    $("#openedSavingsWarn").text("");
+    //calculate new balance for withdrawals
+    newSavBalance = previousSavBalance - $savWithdrawAmount;
+    //calculate transaction date for withdrawals
+    var withdrawalTransactionDate = calculateSavDaysElapsed();
+    //create withdrawal transaction
+    var withdrawalTransaction = {
+      savDate: formatDate(withdrawalTransactionDate),
+      savDescription: "Withdrawal",
+      savAmount: "-$" + $savWithdrawAmount.toFixed(2), //2 decimals
+      savBalance: "$" + newSavBalance.toFixed(2), //2 decimals
+    };
+    savingsTransactions.push(withdrawalTransaction); //add withdraw transaction to array
+    makeSavingsRows(); //update table with new row of withdraw transaction
+    $savWithdrawAmount = $("#SavingsWithdrawText").val(""); //clear out withdraw text box
+  } else {
+    var savWithdrawMsg =
+      "Withdrawal must be less than current balance and greater than 0";
+    //display warning message
+    $("#openedSavingsWarn").text(savWithdrawMsg);
+  }
+});
 
-//     //calcualte new balance for withdrawals
-//     newBalance = previousBalance - $checkWithdrawAmount;
+//FUNCTION TO STOP INTEREST PAYMENT TIMER
+function stopSavInterestTimer() {
+  clearInterval(savTimer);
+  clearInterval(savTimer2);
+}
 
-//     //calculate transaction date for withdrawals
-//     var withdrawalTransactionDate = calculateDaysElapsed();
-
-//     //create withdrawal transaction
-//     var withdrawalTransaction = {
-//       Date: formatDate(withdrawalTransactionDate),
-//       Description: "Withdrawal",
-//       Amount: "-$" + $checkWithdrawAmount.toFixed(2), //2 decimals
-//       Balance: "$" + newBalance.toFixed(2), //2 decimals
-//     };
-//     savingsTransactions.push(withdrawalTransaction); //add withdraw transaction to array
-//     makeSavingsRows(); //update table with new row of withdraw transaction
-//     $checkWithdrawAmount = $("#checkingWithdrawText").val(""); //clear out withdraw text box
-//   } else {
-//     var checkWithdrawMsg = "Withdrawal must be less than current balance";
-//     //display warning message
-//     $("#openedCheckingWarn").text(checkWithdrawMsg);
-//   }
-// });
-
-// //FUNCTION TO STOP INTEREST PAYMENT TIMER
-// function stopInterestTimer() {
-//   clearInterval(timer);
-//   clearInterval(timer2);
-// }
-
-// //CLOSE ACCOUNT
-// $("#btnCloseCheck").on("click", function () {
-//   //stop timer
-//   stopInterestTimer();
-//   //hide input controls
-//   $("#openCheckingControls").hide();
-//   //calculate closed account withdrawal
-//   var previousBalance = trimCurrencyFromPreviousBalance();
-//   //calculate closed account date
-//   var closeAccountTransactionDate = calculateDaysElapsed();
-//   //create final withdrawal transaction
-//   var closeAccountTransaction = {
-//     Date: formatDate(closeAccountTransactionDate),
-//     Description: "Account Closed",
-//     Amount: "-$" + previousBalance.toFixed(2), //2 decimals
-//     Balance: "$0.00",
-//   };
-//   savingsTransactions.push(closeAccountTransaction); //add withdraw transaction to array
-//   makeSavingsRows(); //update table with new row of withdraw transaction
-//   //display account closed message
-//   var $checkingCloseMsg = $("#closeCheckingMsg");
-//   var checkingClosedMsg = "Acccount closed";
-//   $checkingCloseMsg.text(checkingClosedMsg);
-//   $checkingCloseMsg.removeClass("hide");
-//   //hide Close Account button
-//   $btnCloseAccount.hide();
-//   //make columns sortable
-// });
+//CLOSE SAVINGS ACCOUNT
+$("#btnCloseSav").on("click", function () {
+  //stop timer
+  stopSavInterestTimer();
+  //hide input controls
+  $("#openSavingsControls").hide();
+  //calculate closed account withdrawal
+  var previousSavBalance = trimCurrencyFrompreviousSavBalance();
+  //calculate closed account date
+  var closeSavingsAccountTransactionDate = calculateSavDaysElapsed();
+  //create final withdrawal transaction
+  var closeSavingsAccountTransaction = {
+    savDate: formatDate(closeSavingsAccountTransactionDate),
+    savDescription: "Account Closed",
+    savAmount: "-$" + previousSavBalance.toFixed(2), //2 decimals
+    savBalance: "$0.00",
+  };
+  savingsTransactions.push(closeSavingsAccountTransaction); //add withdraw transaction to array
+  makeSavingsRows(); //update table with new row of withdraw transaction
+  //display account closed message
+  var $savingsCloseMsg = $("#closeSavingsMsg");
+  var savingsClosedMsg = "Acccount closed";
+  $savingsCloseMsg.text(savingsClosedMsg);
+  $savingsCloseMsg.removeClass("hide");
+  //hide Close Account button
+  $btnCloseSav.hide();
+  //make columns sortable
+});

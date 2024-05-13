@@ -16,7 +16,6 @@ var $savWithdrawAmount;
 var previousSavBalance;
 var newSavBalance;
 var savElapsedTime = 0;
-console.log(savElapsedTime);
 
 //initally hide open account info
 $("#opensavingsAcct").hide();
@@ -112,11 +111,9 @@ function startSavInterestTimer() {
     //increment seconds if less than 10 seconds
     if (savElapsedTime < 10) {
       savElapsedTime++;
-      console.log(savElapsedTime);
       //otherwise resest seconds back to 1
     } else {
       savElapsedTime = 1;
-      console.log(savElapsedTime);
     }
   }, timeUntilFirstSavingsInterestPayment);
 }
@@ -124,13 +121,11 @@ function startSavInterestTimer() {
 //FUNCTION TO GET MOST RECENT DATE OF INTEREST PAYMENTS (OR OPEN ACCOUNT DATE)
 function getMostRecentSavInterestDateOrOpenDate() {
   for (let i = savingsTransactions.length - 1; i >= 0; i--) {
-    console.log(savingsTransactions[i].savDescription);
     if (
       savingsTransactions[i].savDescription ===
         "Interest Payment (" + $savInterestRate + "%)" ||
       savingsTransactions[i].savDescription === "Open Account"
     ) {
-      console.log(savingsTransactions[i]);
       return savingsTransactions[i].savDate;
     }
   }
@@ -157,12 +152,10 @@ function calculateSavDaysElapsed() {
   var lastSavInterestPaymentOrOpenAccount =
     getMostRecentSavInterestDateOrOpenDate();
   var savDaysElapsed = 365 * (savElapsedTime / 10);
-  console.log(savDaysElapsed);
   var nextSavTransactionDate = new Date(lastSavInterestPaymentOrOpenAccount);
   nextSavTransactionDate.setDate(
     nextSavTransactionDate.getDate() + savDaysElapsed
   );
-  console.log(nextSavTransactionDate);
   return nextSavTransactionDate;
 }
 
@@ -202,7 +195,6 @@ function addSavInterestPayment() {
   nextSavInterestPaymentDate.setDate(nextSavInterestPaymentDate.getDate() + 1); //add one day to make full year
   //calculate interest amount and new balance
   var previousSavBalance = trimCurrencyFrompreviousSavBalance();
-  console.log($savInterestRate);
   SavInterestAmount = previousSavBalance * $savInterestRate;
   newSavBalance = SavInterestAmount + previousSavBalance;
   //create new interest payment transaction
@@ -251,7 +243,7 @@ $("#btnSavingsWithdraw").on("click", function () {
   $savWithdrawAmount = $("#SavingsWithdrawText").val(); //get withdrawal amount
   $savWithdrawAmount = Number($savWithdrawAmount); //convert from string to number
   var previousSavBalance = trimCurrencyFrompreviousSavBalance(); //get most recent account balance
-  if ($savWithdrawAmount <= previousSavBalance && $savWithdrawAmount !== 0) {
+  if ($savWithdrawAmount <= previousSavBalance && $savWithdrawAmount > 0) {
     //don't display warning message
     $("#openedSavingsWarn").text("");
     //calculate new balance for withdrawals
@@ -308,5 +300,10 @@ $("#btnCloseSav").on("click", function () {
   $savingsCloseMsg.removeClass("hide");
   //hide Close Account button
   $btnCloseSav.hide();
-  //make columns sortable
+  // Add column header effects to all column headers
+  const table = document.getElementById("savingsTable"); //get table element
+  const columnHeaders = table.querySelectorAll("th"); //get table headers
+  columnHeaders.forEach(function (header) {
+    header.classList.add("columnHover");
+  });
 });

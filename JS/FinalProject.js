@@ -16,7 +16,6 @@ var $checkWithdrawAmount;
 var previousBalance;
 var newBalance;
 var elapsedTime = 0;
-console.log(elapsedTime);
 
 //initally hide open account info
 $("#openCheckingAcct").hide();
@@ -109,11 +108,9 @@ function startInterestTimer() {
     //increment seconds if less than 10 seconds
     if (elapsedTime < 10) {
       elapsedTime++;
-      console.log(elapsedTime);
       //otherwise resest seconds back to 1
     } else {
       elapsedTime = 1;
-      console.log(elapsedTime);
     }
   }, timeUntilFirstInterestPayment);
 }
@@ -121,13 +118,11 @@ function startInterestTimer() {
 //FUNCTION TO GET MOST RECENT DATE OF INTEREST PAYMENTS (OR OPEN ACCOUNT DATE)
 function getMostRecentInterestDateOrOpenDate() {
   for (let i = checkingTransactions.length - 1; i >= 0; i--) {
-    console.log(checkingTransactions[i].Description);
     if (
       checkingTransactions[i].Description ===
         "Interest Payment (" + $checkInterestRate + "%)" ||
       checkingTransactions[i].Description === "Open Account"
     ) {
-      console.log(checkingTransactions[i]);
       return checkingTransactions[i].Date;
     }
   }
@@ -153,10 +148,8 @@ function calculateDaysElapsed() {
   //calculate simulated date based on time elapsed since last interest payment
   var lastInterestPaymentOrOpenAccount = getMostRecentInterestDateOrOpenDate();
   var daysElapsed = 365 * (elapsedTime / 10);
-  console.log(daysElapsed);
   var nextTransactionDate = new Date(lastInterestPaymentOrOpenAccount);
   nextTransactionDate.setDate(nextTransactionDate.getDate() + daysElapsed);
-  console.log(nextTransactionDate);
   return nextTransactionDate;
 }
 
@@ -197,7 +190,6 @@ function addInterestPayment() {
 
   //calculate interest amount and new balance
   var previousBalance = trimCurrencyFromPreviousBalance();
-  console.log($checkInterestRate);
   interestAmount = previousBalance * $checkInterestRate;
   newBalance = interestAmount + previousBalance;
 
@@ -250,7 +242,7 @@ $("#btnCheckingWithdraw").on("click", function () {
   $checkWithdrawAmount = $("#checkingWithdrawText").val(); //get withdrawal amount
   $checkWithdrawAmount = Number($checkWithdrawAmount); //convert from string to number
   var previousBalance = trimCurrencyFromPreviousBalance(); //get most recent account balance
-  if ($checkWithdrawAmount <= previousBalance && $checkWithdrawAmount !== 0) {
+  if ($checkWithdrawAmount <= previousBalance && $checkWithdrawAmount > 0) {
     //don't display warning message
     $("#openedCheckingWarn").text("");
     //calculate new balance for withdrawals
@@ -307,49 +299,10 @@ $("#btnCloseCheck").on("click", function () {
   $checkingCloseMsg.removeClass("hide");
   //hide Close Account button
   $btnCloseAccount.hide();
-  //make columns sortable
+  // Add column header effects to all column headers
+  const table = document.getElementById("checkingTable"); //get table element
+  const columnHeaders = table.querySelectorAll("th"); //get table headers
+  columnHeaders.forEach(function (header) {
+    header.classList.add("columnHover");
+  });
 });
-
-// //ARRARY TO SORT TABLE COLUMNS
-// var compare = {
-//   //sort date
-//   Date: function (a, b) {
-//     a = new Date(a);
-//     b = new Date(b);
-//     return a - b;
-//   },
-//   Description: function (a, b) {
-//     //sort description alphabetically
-//     if (a < b) {
-//       return -1;
-//     } else {
-//       return a > b ? 1 : 0; //return 1
-//     } //or return 0 if they're the same
-//   },
-//   Amount: function (a, b) {
-//     //sort dollar amount as numbers (remove $ and -$)
-//     a = parseFloat(a.innerHtml.split("$")[1].replace(/,/g, ""));
-//     a = parseFloat(a.innerHtml.split("-$")[1].replace(/,/g, ""));
-//     b = parseFloat(b.innerHtml.split("$")[1].replace(/,/g, ""));
-//     b = parseFloat(b.innerHtml.split("-$")[1].replace(/,/g, ""));
-//   },
-//   Balance: function (a, b) {
-//     //sort dollar amount as numbers (remove $ and -$)
-//     a = parseFloat(a.innerHtml.split("$")[1].replace(/,/g, ""));
-//     a = parseFloat(a.innerHtml.split("-$")[1].replace(/,/g, ""));
-//     b = parseFloat(b.innerHtml.split("$")[1].replace(/,/g, ""));
-//     b = parseFloat(b.innerHtml.split("-$")[1].replace(/,/g, ""));
-//   },
-// };
-
-//FUNCTION TO MAKE TABLE SORTABLE
-// var sortedArray = checkingTransactions.sort(function (a, b) {
-//   return compare.Date(a.Date, b.Date); //sort array based on Date property
-// });
-
-// $("#checkingTable").each(function () {
-//   var $checkingTable = $(this);
-//   var $tbody = $checkingTable.find("tbody");
-//   var $controls = $checkingTable.find("th");
-//   var rows = $tbody.find("tr").toArray();
-// });

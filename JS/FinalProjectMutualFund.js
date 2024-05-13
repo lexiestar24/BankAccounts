@@ -16,7 +16,6 @@ var $mfWithdrawAmount;
 var previousMFBalance;
 var newMFBalance;
 var mfElapsedTime = 0;
-console.log(mfElapsedTime);
 
 //initally hide open account info
 $("#openMutualFundAcct").hide();
@@ -112,11 +111,9 @@ function startMFInterestTimer() {
     //increment seconds if less than 10 seconds
     if (mfElapsedTime < 10) {
       mfElapsedTime++;
-      console.log(mfElapsedTime);
       //otherwise resest seconds back to 1
     } else {
       mfElapsedTime = 1;
-      console.log(mfElapsedTime);
     }
   }, timeUntilFirstMutualFundInterestPayment);
 }
@@ -124,13 +121,11 @@ function startMFInterestTimer() {
 //FUNCTION TO GET MOST RECENT DATE OF INTEREST PAYMENTS (OR OPEN ACCOUNT DATE)
 function getMostRecentMFInterestDateOrOpenDate() {
   for (let i = mutualFundTransactions.length - 1; i >= 0; i--) {
-    console.log(mutualFundTransactions[i].mfDescription);
     if (
       mutualFundTransactions[i].mfDescription ===
         "Interest Payment (" + $mfInterestRate + "%)" ||
       mutualFundTransactions[i].mfDescription === "Open Account"
     ) {
-      console.log(mutualFundTransactions[i]);
       return mutualFundTransactions[i].mfDate;
     }
   }
@@ -157,12 +152,10 @@ function calculateMFDaysElapsed() {
   var lastMFInterestPaymentOrOpenAccount =
     getMostRecentMFInterestDateOrOpenDate();
   var mfDaysElapsed = 365 * (mfElapsedTime / 10);
-  console.log(mfDaysElapsed);
   var nextMFTransactionDate = new Date(lastMFInterestPaymentOrOpenAccount);
   nextMFTransactionDate.setDate(
     nextMFTransactionDate.getDate() + mfDaysElapsed
   );
-  console.log(nextMFTransactionDate);
   return nextMFTransactionDate;
 }
 
@@ -203,7 +196,6 @@ function addMFInterestPayment() {
   nextMFInterestPaymentDate.setDate(nextMFInterestPaymentDate.getDate() + 1); //add one day to make full year
   //calculate interest amount and new balance
   var previousMFBalance = trimCurrencyFrompreviousMFBalance();
-  console.log($mfInterestRate);
   mfInterestAmount = previousMFBalance * $mfInterestRate;
   newMFBalance = mfInterestAmount + previousMFBalance;
   //create new interest payment transaction
@@ -252,7 +244,7 @@ $("#btnMutualFundWithdraw").on("click", function () {
   $mfWithdrawAmount = $("#mutualFundWithdrawText").val(); //get withdrawal amount
   $mfWithdrawAmount = Number($mfWithdrawAmount); //convert from string to number
   var previousMFBalance = trimCurrencyFrompreviousMFBalance(); //get most recent account balance
-  if ($mfWithdrawAmount <= previousMFBalance && $mfWithdrawAmount !== 0) {
+  if ($mfWithdrawAmount <= previousMFBalance && $mfWithdrawAmount > 0) {
     //don't display warning message
     $("#openedMutualFundWarn").text("");
     //calculate new balance for withdrawals
@@ -309,5 +301,10 @@ $("#btnCloseMF").on("click", function () {
   $mutualFundCloseMsg.removeClass("hide");
   //hide Close Account button
   $btnCloseMF.hide();
-  //make columns sortable
+  // Add column header effects to all column headers
+  const table = document.getElementById("mutualFundTable"); //get table element
+  const columnHeaders = table.querySelectorAll("th"); //get table headers
+  columnHeaders.forEach(function (header) {
+    header.classList.add("columnHover");
+  });
 });

@@ -74,10 +74,8 @@ td {
 }
 
 /*-----SORT TABLE STYLING-----*/
-th:hover,
-.sortable,
-th.ascending,
-th.descending {
+.columnHover:hover,
+.columnClicked {
   background-color: #dedcd0;
   cursor: pointer;
 }
@@ -128,6 +126,7 @@ th.descending {
 }
 .warn {
   color: red;
+  background-color: #dedcd0;
   text-align: center;
   font-weight: bold;
 }

@@ -1,0 +1,138 @@
+/*Lexie Star
+Final Project - CSS*/
+
+/*-----PAGE LAYOUT-----*/
+body {
+  width: 90%;
+  margin: 0 auto;
+  font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+    "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+}
+.flex {
+  display: flex;
+  justify-content: center;
+}
+.acct {
+  width: 30%;
+  margin: 1%;
+  padding-top: 1%;
+  padding-bottom: 1%;
+}
+/*-----GENERAL STYLING-----*/
+h1 {
+  text-align: center;
+  padding-top: 2%;
+}
+button {
+  text-transform: uppercase;
+  font-weight: bold;
+  background-color: #a9a79a;
+  padding: 1%;
+  margin-bottom: 1%;
+}
+button:hover {
+  text-transform: uppercase;
+  font-weight: bold;
+  background-color: #dedcd0;
+  padding: 1%;
+  margin-bottom: 1%;
+}
+.center {
+  margin-right: auto;
+  margin-left: auto;
+}
+label {
+  font-weight: bold;
+}
+
+/*-----TABLE STYLING-----*/
+table {
+  border-width: 2px;
+  border-style: solid;
+  border-color: black;
+  width: 100%;
+  margin-top: 2%;
+  margin-bottom: 2%;
+  border-collapse: collapse;
+}
+th,
+td {
+  text-align: center;
+  border-width: 1px;
+  border-style: solid;
+  border-color: black;
+  padding: 7px;
+}
+.scroll {
+  overflow: auto;
+  height: 450px;
+}
+#openChecking,
+#openSavings,
+#openMutualFund {
+  padding-bottom: 2%;
+}
+
+/*-----SORT TABLE STYLING-----*/
+th:hover,
+.sortable,
+th.ascending,
+th.descending {
+  background-color: #dedcd0;
+  cursor: pointer;
+}
+
+/*-----ACCOUNT STYLING-----*/
+#checkingInfo,
+.blue {
+  background-color: #83a2b0;
+  border: 1px solid black;
+}
+#savingsInfo,
+.orange {
+  background-color: #c4883e;
+  border: 1px solid black;
+}
+#mutualFundInfo,
+.green {
+  background-color: #809166;
+  border: 1px solid black;
+}
+.acctImg {
+  width: 100%;
+}
+.acct {
+  display: inline-block;
+}
+#btnCloseCheck,
+#btnCloseSav {
+  display: flex;
+  justify-content: center;
+}
+#openCheckingControls,
+#openSavingsControls {
+  padding-left: 2%;
+}
+
+/*-----fix me
+#btnClose {
+  margin-top: 2%;
+}
+*/
+
+/*-----JS STYLING-----*/
+.hide {
+  display: none;
+}
+.warn {
+  color: red;
+  text-align: center;
+  font-weight: bold;
+}
+#closeCheckingMsg {
+  background-color: yellow;
+  text-align: center;
+  font-weight: bold;
+  text-transform: uppercase;
+  padding: 2%;
+}
